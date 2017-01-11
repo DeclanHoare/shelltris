@@ -10,19 +10,21 @@ script expects the getch file to be in the current directory.
 Once you have built the helper, you can play the game by changing into
 the shelltris directory and typing:
 
-	`./shelltris.sh`
+	./shelltris.sh
 
 It will calibrate itself for a few second, then ask you to hit 'p' to play.
 
 
 ##KEYS
 
-,     - rotate counterclockwise
-.     - rotate clockqise
-z     - move left
-x     - move right
-space - move piece faster
-q     - end the game immediately
+|key|function|
+|---|--------|
+|,|rotate counterclockwise|
+|.|rotate clockwise|
+|z|move left|
+|x|move right|
+|space|move piece faster|
+|q|end the game immediately|
 
 
 ##KNOWN ISSUES:
@@ -67,8 +69,7 @@ accompanying documentation.
 
 ##REVISION HISTORY:
 
-Posting Date	| Vers.	| Notes
-------------------------------------------------------------------------
-2007-12-12	| 1.0	| First public release.
-2007-12-18	| 1.1	| Linux compatibility fixes.
-
+|Posting Date|Vers.|Notes|
+|------------|-----|-----|
+|2007-12-12|1.0|First public release.|
+|2007-12-18|1.1|Linux compatibility fixes.|
