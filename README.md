@@ -58,6 +58,11 @@ parameter.
   variation from machine to machine.
 * Clearing rows causes all of the blocks already on the screen to change 
   appearance (I'm not sure if this is a bug or intentional).
+* Occasionally, when selecting the next piece, a message might appear saying:
+  `/usr/local/bin/shelltris: line 1149: warning: command substitution: ignored null byte in input`
+  This message will overwrite the playing area and not go away until a new piece moves over it.
+  This is already supposed to be suppressed with 2> /dev/null, but this does not work with local
+  for some reason.
 
 ##IDEAS:
 
