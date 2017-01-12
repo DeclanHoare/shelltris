@@ -130,7 +130,7 @@ provided that notices of copyright and authorship remain unmodified.
 
 If you find bugs and are able to fix them, please either make a
 pull request to my repository or e-mail them to David G. Atwood
-on dgatwood@mac.com and he'll try to get them into future versions
+on dgatwood at mac dot com and he'll try to get them into future versions
 of the software.  The same applies if you come up with interesting
 features.
 
