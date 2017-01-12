@@ -2,50 +2,78 @@
 #Shelltris
 
 Shelltris is a Tetris clone written in Bash by David G. Atwood.
-This version has been modified by me to have compatibility with more
-systems (by trial and error, as I have no idea what causes the problem).
+This version has been modified by me to fix some bugs and enhance the
+game's functionality, although since I don't have a Mac OS 10 computer
+I may have broken compatibility with that operating system in the
+process.
 It uses a small C helper, getch, which must be built for your operating
-system.  A Makefile is included - CFLAGS can be added there. Tweak as
-needed, then do a "make".  The shell script expects the getch file to
-be in the current directory.
+system.  It can also take advantage of a configuration directory at
+/var/games/shelltris if it is present and writable.  Both of these
+can be handled by Autotools by running:
 
-Once you have built the helper, you can play the game by changing into
-the shelltris directory and typing:
+`autoreconf -i`
+`./configure`
+`make`
 
-	./shelltris.sh
+as yourself and then
 
-It will calibrate itself for a few seconds, then ask you to hit 'p' to play.
+`make install`
 
+as root, but if you wish to bypass the Autotools system, you can build
+getch by simply running
+`make getch`
+which will allow you to play the game locally.
+
+If you opted to build getch and play the game locally, you can run it
+with:
+`./shelltris.sh`
+in the shelltris directory. If you instead installed it system-wide, you
+can run it with:
+`shelltris`
+anywhere.
+
+The first time you run Shelltris, it will calibrate itself for your
+environment to make sure it runs at a reasonable speed. If you have
+issues later on, you can recalibrate by running Shelltris with the
+`-calibrate`
+parameter.
 
 ##KEYS
 
-|key|function|
-|---|--------|
-|,|rotate counterclockwise|
-|.|rotate clockwise|
-|z|move left|
-|x|move right|
-|space|move piece faster|
-|q|end the game immediately|
+|key  |function                |
+|-----|------------------------|
+|,    |rotate counterclockwise |
+|.    |rotate clockwise        |
+|z    |move left               |
+|x    |move right              |
+|space|move piece faster       |
+|q    |end the game immediately|
 
 
 ##KNOWN ISSUES:
 
-* No high score support.
 * Timing loops are highly sensitive to changes in CPU performance (a problem
   that is basically unavoidable, unfortunately).
 * In spite of attempts to calibrate the timers, there is still
   variation from machine to machine.
-* The script must execute itself several times with different flags to do
-  calibration.  This means that the path to the script is hard-coded
-  within the script itself.  It is currently hard-coded to assume the
-  script is in the current directory.
-* Clearing rows doesn't work if the terminal is too big.
-* Clearing rows on a small-enough terminal causes all of the blocks
-  already on the screen to change appearance (not sure if this is a bug
-  or intentional).
+* Clearing rows causes all of the blocks already on the screen to change 
+  appearance (I'm not sure if this is a bug or intentional).
+
+##IDEAS:
+
+* Music using speaker-test? - there is a function to play a tone:
+   _alarm() {
+     ( \speaker-test --frequency $1 --test sine )&
+     pid=$!
+     \sleep 0.${2}s
+     \kill -9 $pid
+   }
+  My main concern is adding this into the timer. Obviously the call
+  would have to be backgrounded, but there would still be a slight
+  delay.
 
 ##DECLAN'S CHANGES:
+
 My Arch desktop can't play the original version of this game, although it works
 fine on Debian and Ubuntu. After a bit of debugging, I found that the cause of
 the issue was with four lines in the calibrate_timers function, all formatted
@@ -63,14 +91,36 @@ to zsh being my primary shell on my Arch machine, too, but I don't know why that
 would be a problem, and running the unmodified game from a bash shell doesn't
 work either. I am absolutely bewildered by this problem but it's fixed now.
 
+In addition:
+
+* There was one part of the code which assumed that the board was 23 lines high,
+  breaking line clearing for any taller terminals. I changed it to adapt to the
+  size of the terminal like the rest of the code.
+  
+* A high score system has been added. The high score is displayed when you lose,
+  and if you get a higher one, it is replaced. The score is stored in
+  /var/games/shelltris/highscore.sh. If /var/games/shelltris is not writable,
+  ~/.config/shelltris will be used instead.
+
+* The Makefile has been entirely replaced with an Autotools-based build system,
+  which also creates the newly necessary files in /var/games and installs the
+  script itself, making the game easy to install system-wide.
+
+* The directories the game is installed in and run from no longer matter.
+
+* Calibration information is now saved to /var/games/shelltris/calibrate.sh
+  and automatically loaded on subsequent runs. If /var/games/shelltris is
+  not writable, ~/.config/shelltris will be used instead.
+
+
 
 ##PERFORMANCE:
 
+###Mac OS 10
 For maximum performance on slower machines, it is recommended to use Mac OS X v10.5
 over previous versions.  Terminal 2.0 seems to be dramatically faster than
 previous versions (on the same hardware) for every drawing test.
 Your mileage may vary.
-
 
 ##LEGAL STUFF:
 
@@ -92,8 +142,9 @@ accompanying documentation.
 
 ##REVISION HISTORY:
 
-|Posting Date|Vers.|Notes|
-|------------|-----|-----|
-|2007-12-12|1.0|First public release.|
-|2007-12-18|1.1|Linux compatibility fixes.|
-|2017+|git|see commit history|
+|Posting Date|Vers.|Notes                     |
+|------------|-----|--------------------------|
+|2007-12-12  |1.0  |First public release.     |
+|2007-12-18  |1.1  |Linux compatibility fixes.|
+|2017-01-12  |1.2  |See "DECLAN'S CHANGES".   |
+|2017+       |git  |see commit history        |

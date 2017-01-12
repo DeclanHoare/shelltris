@@ -1,18 +1,45 @@
 #!/bin/bash
+# Shelltris
+# Copyright 2007 David A. Gatwood
+# Modified by Declan Hoare 2017
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# For faster launch, run with the -calibrate.  This sscript will print
-# the following values for your machine:
+savedirectory=/var/games/shelltris
 
-# CALIBRATED="yes"
-# ONE_SECOND=5600
-# DRAW_PENALTY=1300
-# ROT_PENALTY=1200
+if [ ! -w $savedirectory ]
+then
+	savedirectory="$HOME/.config/shelltris"
+	if [ ! -d $savedirectory ]
+	then
+		mkdir -p $savedirectory
+	fi
+fi
 
-# Once you have obtained those values, change the numbers above to
-# match the actual values for your system, then uncomment the above
-# lines.
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+if [ -f $savedirectory/highscore.sh ]
+then
+	source $savedirectory/highscore.sh
+else
+	HISCORE=100
+fi
+
+if [ -f $savedirectory/calibrate.sh ]
+then
+	source $savedirectory/calibrate.sh
+fi
+
+LOCATION=`dirname $0`
+
+if [ -x "$LOCATION/getch" ]
+then
+	GETCH="$LOCATION/getch"
+else
+if [ -x `which getch` ]
+then
+	GETCH="getch"
+else
+	echo "getch not found, Shelltris was not installed correctly"
+	exit 1
+fi
+fi
 
 LL=`stty -a | grep rows | sed 's/^.*;\(.*\)rows\(.*\);.*$/\1\2/' | sed 's/;.*$//' | sed 's/[^0-9]//g'` # ROWS
 LC=`stty -a | grep columns | sed 's/^.*;\(.*\)columns\(.*\);.*$/\1\2/' | sed 's/;.*$//' | sed 's/[^0-9]//g'` # COLUMNS
@@ -21,6 +48,7 @@ if [ $LC -lt 80 ] ; then
 	exit 0;
 fi
 
+HEIGHTOFBOARD=$(( LL - 1 ))
 
 # BASH in Mac OS X 10.4 has a very serious variable handling bug
 # in which subroutine arguments overwrite the main arguments, then
@@ -132,8 +160,6 @@ function set_level()
 	LEVEL=$(( ( $SCORE / 1000 ) + 1 ))
 	CUR_TICK_RATE=`get_tick_rate`
 }
-
-
 
 ## Check block placement routines.  Pass in a row,column pair.  It will
 ## check to see if the specified block can be placed at the specified
@@ -943,7 +969,7 @@ function set_row_copy()
 
     GETBOARD="echo \""
     local POS=1
-    while [ $POS -le 23 ] ; do
+    while [ $POS -le $HEIGHTOFBOARD ] ; do
 	GETBOARD="$GETBOARD`echo $GETROW | sed -e 's/ST=\"//g' -e 's/\"//g' -e "s/R/$POS/g"`
 " # newline, 22 backspaces.
 	POS=$(( $POS + 1 ))
@@ -1516,6 +1542,7 @@ fi
 
     local HPOSL=$(( $LC - 10 ))
     local HPOSR=$(( $LC - 3 ))
+    # local HISCOREHPOS=$(( $LC - 34 ))
     vtsetpos 5 7
     echo -n '[1;7m'				# set inverse
     echo -n "ShellTris"
@@ -1560,10 +1587,35 @@ fi
     echo -n '[7m'				# set inverse
     echo -n "are not removed"
     echo -n '[m'				# clear formatting
-    vtsetpos 17 7
+    vtsetpos 17 6
     echo -n '[7m'				# set inverse
     echo -n "or altered."
     echo -n '[m'				# clear formatting
+    vtsetpos 19 4
+    echo -n '[7m'
+    echo -n "Modified by Declan"
+    echo -n '[m'
+    vtsetpos 20 7
+    echo -n '[7m'
+    echo -n "Hoare 2017"
+    echo -n '[m'
+    #vtsetpos 2 $HISCOREHPOS
+    #echo -n '[1;7m'
+    #echo -n "HIGH SCORES:"
+    #echo -n '[m'	
+    #POS=4
+    #while [ $POS -lt 14 ]
+    #do
+	#	SCORENO=$(( $POS - 3 ))
+	#	vtsetpos $POS $HISCOREHPOS
+	#	local CMD="echo \$HI""$SCORENO""NAME - \$HI""$SCORENO""SCORE"
+	#	echo $CMD >> scoreline
+	#	local SCORELINE=`eval "$CMD"`
+	#	echo -n '[7m'
+	#	echo -n "$SCORELINE"
+	#	echo -n '[m'	
+	#	POS=$(( $POS + 1 ))
+	#done
     vtsetpos 3 $HPOSL
     echo -n ' '
     echo -n '[4m'				# set underline
@@ -1739,7 +1791,7 @@ function read_test()
     local ONE_SECOND=100000			# ensure this never trips!
     local CUR_TICK_RATE=$ONE_SECOND
     while [ $GLOBAL_TICK_COUNT -lt 20000 ] ; do
-       	CHAR=`./getch`
+       	CHAR=`$GETCH`
 	if [ $1 = "rot" ] ; then
 		CHAR=","
 	fi
@@ -1904,14 +1956,14 @@ function calibrate_timers()
 	CUR_TICK_RATE=$ONE_SECOND
 	return
     fi
-
-    { time -p ./shelltris.sh -testdraw ; } 2>/tmp/drawtesttime
+	
+    { time -p $0 -testdraw ; } 2>/tmp/drawtesttime
     local DRAW_DUR=`grep real /tmp/drawtesttime | sed 's/real//' | tr -d ' '`
-    { time -p ./shelltris.sh -testread ; } 2>/tmp/readtesttime
+    { time -p $0 -testread ; } 2>/tmp/readtesttime
     local READ_DUR=`grep real /tmp/readtesttime | sed 's/real//' | tr -d ' '`
-    { time -p ./shelltris.sh -testrot ; } 2>/tmp/rottesttime
+    { time -p $0 -testrot ; } 2>/tmp/rottesttime
     local ROT_DUR=`grep real /tmp/readtesttime | sed 's/real//' | tr -d ' '`
-    { time -p ./shelltris.sh -testclear ; } 2>/tmp/cleartesttime
+    { time -p $0 -testclear ; } 2>/tmp/cleartesttime
     local CLEAR_DUR=`grep real /tmp/cleartesttime | sed 's/real//' | tr -d ' '`
 
     # echo "DRAW DUR: $DRAW_DUR"
@@ -1931,14 +1983,17 @@ function calibrate_timers()
     DRAW_PENALTY=`echo "scale=0; 100 * $DRAW_SINGLE / $READ_SINGLE" | bc`
     ROT_PENALTY=`echo "scale=0; ((100 * $ROT_SINGLE) - (100 * $READ_SINGLE)) / $READ_SINGLE" | bc`
 
+	echo "CALIBRATED=\"yes\"" > $savedirectory/calibrate.sh
+	echo "ONE_SECOND=$ONE_SECOND" >> $savedirectory/calibrate.sh
+	echo "DRAW_PENALTY=$DRAW_PENALTY" >> $savedirectory/calibrate.sh
+	echo "ROT_PENALTY=$ROT_PENALTY" >> $savedirectory/calibrate.sh
     # DEBUG=1
     if [ $DEBUG -eq 1 ] ; then
 	stty sane
 	echo '[m'
 	echo '[?25h'
 	clear
-	echo "Here is your calibration data.  Please change the values in"
-	echo "the script and uncomment the relevant lines."
+	echo "Here is your calibration data. It has been automatically updated."
 	echo
 	echo "DRAW SINGLE IS $DRAW_SINGLE"
 	echo "ROTATE SINGLE IS $ROT_SINGLE"
@@ -2196,7 +2251,7 @@ while [ $CONT -eq 1 ] ; do
 
     WAITING=1
     while [ $WAITING -eq 1 ] ; do
-	CHAR=`./getch`
+	CHAR=`$GETCH`
 	if [ "x$CHAR" = "xq" ] ; then
 		WAITING=2
 		CONT=0
@@ -2239,7 +2294,7 @@ while [ $CONT -eq 1 ] ; do
       # Start the game loop.
       while [ $GAMEOVER -eq 0 ] ; do
 	# echo -n "Enter a character: "
-	CHAR=`./getch`
+	CHAR=`$GETCH`
 	if [ "x$CHAR" = "x" ] ; then
 		# echo "NO DATA";
 		echo -n '' # We will delay here eventually.
@@ -2411,7 +2466,14 @@ while [ $CONT -eq 1 ] ; do
 		done
 	fi # (not PAUSED)
       done # game loop
-      SCORE="$SCORE      GAME OVER.  Press 'p' to play, 'q' to quit."
+      if [ $SCORE -gt $HISCORE ]
+      then
+	    HISCORE=$SCORE
+	    echo "HISCORE=$SCORE" > $savedirectory/highscore.sh
+	    SCORE="Game over. Score: $SCORE.      New high score!  Press 'p' to play, 'q' to quit."
+	  else
+        SCORE="Game over. Score: $SCORE.      High score: $HISCORE.  Press 'p' to play, 'q' to quit."
+      fi
       draw_status
     fi
 done # main program loop
