@@ -1905,13 +1905,13 @@ function calibrate_timers()
 	return
     fi
 
-    2>/tmp/drawtesttime time -p ./shelltris.sh -testdraw
+    { time -p ./shelltris.sh -testdraw ; } 2>/tmp/drawtesttime
     local DRAW_DUR=`grep real /tmp/drawtesttime | sed 's/real//' | tr -d ' '`
-    2>/tmp/readtesttime time -p ./shelltris.sh -testread
+    { time -p ./shelltris.sh -testread ; } 2>/tmp/readtesttime
     local READ_DUR=`grep real /tmp/readtesttime | sed 's/real//' | tr -d ' '`
-    2>/tmp/rottesttime time -p ./shelltris.sh -testrot
+    { time -p ./shelltris.sh -testrot ; } 2>/tmp/rottesttime
     local ROT_DUR=`grep real /tmp/readtesttime | sed 's/real//' | tr -d ' '`
-    2>/tmp/cleartesttime time -p ./shelltris.sh -testclear
+    { time -p ./shelltris.sh -testclear ; } 2>/tmp/cleartesttime
     local CLEAR_DUR=`grep real /tmp/cleartesttime | sed 's/real//' | tr -d ' '`
 
     # echo "DRAW DUR: $DRAW_DUR"
