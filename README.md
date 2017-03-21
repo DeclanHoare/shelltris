@@ -1,5 +1,5 @@
 
-#Shelltris
+# Shelltris
 
 Shelltris is a Tetris clone written in Bash by David G. Atwood.
 This version has been modified by me to fix some bugs and enhance the
@@ -38,7 +38,7 @@ issues later on, you can recalibrate by running Shelltris with the
 `-calibrate`
 parameter.
 
-##KEYS
+## KEYS
 
 |key  |function                |
 |-----|------------------------|
@@ -50,7 +50,7 @@ parameter.
 |q    |end the game immediately|
 
 
-##KNOWN ISSUES:
+## KNOWN ISSUES:
 
 * Timing loops are highly sensitive to changes in CPU performance (a problem
   that is basically unavoidable, unfortunately).
@@ -64,7 +64,7 @@ parameter.
   This is already supposed to be suppressed with 2> /dev/null, but this does not work with local
   for some reason.
 
-##IDEAS:
+## IDEAS:
 
 * Music using speaker-test? - there is a function to play a tone:
    _alarm() {
@@ -77,7 +77,7 @@ parameter.
   would have to be backgrounded, but there would still be a slight
   delay.
 
-##DECLAN'S CHANGES:
+## DECLAN'S CHANGES:
 
 My Arch desktop can't play the original version of this game, although it works
 fine on Debian and Ubuntu. After a bit of debugging, I found that the cause of
@@ -119,15 +119,15 @@ In addition:
 
 
 
-##PERFORMANCE:
+## PERFORMANCE:
 
-###Mac OS 10
+### Mac OS 10
 For maximum performance on slower machines, it is recommended to use Mac OS X v10.5
 over previous versions.  Terminal 2.0 seems to be dramatically faster than
 previous versions (on the same hardware) for every drawing test.
 Your mileage may vary.
 
-##LEGAL STUFF:
+## LEGAL STUFF:
 
 This software is provided AS-IS with NO WARRANTY.  If something goes
 wrong, you're on your own.  This software may be freely distributed,
@@ -145,7 +145,7 @@ and so long as you provide reasonable credit in the software and any
 accompanying documentation.
 
 
-##REVISION HISTORY:
+## REVISION HISTORY:
 
 |Posting Date|Vers.|Notes                     |
 |------------|-----|--------------------------|
