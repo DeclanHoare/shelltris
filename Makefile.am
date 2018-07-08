@@ -1,10 +1,5 @@
 # Copyright 2017 Declan Hoare
 
-bin_PROGRAMS = getch
-getch_SOURCES = getch.c
-
-bin_SCRIPTS = shelltris
-
 shelltris:
 	sed "s|/var|@localstatedir@|g" < $(srcdir)/shelltris.sh > shelltris
 	chmod +x shelltris

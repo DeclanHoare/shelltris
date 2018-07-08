@@ -1,7 +1,13 @@
 #!/bin/bash
 # Shelltris
 # Copyright 2007 David A. Gatwood
-# Modified by Declan Hoare 2017
+# Modified by Declan Hoare and chipschap 2017, 2018
+
+TTYSETTING='raw -echo -icanon time 0 min 0'
+function getch()
+{
+	CHAR=$( dd bs=1 count=1 2> /dev/null )
+}
 
 savedirectory=/var/games/shelltris
 
@@ -28,19 +34,6 @@ fi
 
 LOCATION=`dirname $0`
 
-if [ -x "$LOCATION/getch" ]
-then
-	GETCH="$LOCATION/getch"
-else
-if [ -x `which getch` ]
-then
-	GETCH="getch"
-else
-	echo "getch not found, Shelltris was not installed correctly"
-	exit 1
-fi
-fi
-
 LL=`stty -a | grep rows | sed 's/^.*;\(.*\)rows\(.*\);.*$/\1\2/' | sed 's/;.*$//' | sed 's/[^0-9]//g'` # ROWS
 LC=`stty -a | grep columns | sed 's/^.*;\(.*\)columns\(.*\);.*$/\1\2/' | sed 's/;.*$//' | sed 's/[^0-9]//g'` # COLUMNS
 if [ $LC -lt 80 ] ; then
@@ -61,8 +54,6 @@ ARG1=$1
 
 #Change for testing
 INITIAL_SCORE=0
-
-TTYSETTING='raw -echo' # or cbreak
 
 MODE="box"
 CURPIECE=""
@@ -1597,7 +1588,11 @@ fi
     echo -n '[m'
     vtsetpos 20 7
     echo -n '[7m'
-    echo -n "Hoare 2017"
+    echo -n "Hoare and"
+    echo -n '[m'
+    vtsetpos 21 4
+    echo -n '[7m'
+    echo -n "chipschap 2017, 2018"
     echo -n '[m'
     #vtsetpos 2 $HISCOREHPOS
     #echo -n '[1;7m'
@@ -1791,7 +1786,7 @@ function read_test()
     local ONE_SECOND=100000			# ensure this never trips!
     local CUR_TICK_RATE=$ONE_SECOND
     while [ $GLOBAL_TICK_COUNT -lt 20000 ] ; do
-       	CHAR=`$GETCH`
+       	getch;
 	if [ $1 = "rot" ] ; then
 		CHAR=","
 	fi
@@ -2251,7 +2246,7 @@ while [ $CONT -eq 1 ] ; do
 
     WAITING=1
     while [ $WAITING -eq 1 ] ; do
-	CHAR=`$GETCH`
+	getch;
 	if [ "x$CHAR" = "xq" ] ; then
 		WAITING=2
 		CONT=0
@@ -2294,7 +2289,7 @@ while [ $CONT -eq 1 ] ; do
       # Start the game loop.
       while [ $GAMEOVER -eq 0 ] ; do
 	# echo -n "Enter a character: "
-	CHAR=`$GETCH`
+	getch;
 	if [ "x$CHAR" = "x" ] ; then
 		# echo "NO DATA";
 		echo -n '' # We will delay here eventually.

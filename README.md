@@ -6,9 +6,8 @@ This version has been modified by me to fix some bugs and enhance the
 game's functionality, although since I don't have a Mac OS 10 computer
 I may have broken compatibility with that operating system in the
 process.
-It uses a small C helper, getch, which must be built for your operating
-system.  It can also take advantage of a configuration directory at
-/var/games/shelltris if it is present and writable.  Both of these
+It can take advantage of a configuration directory at
+/var/games/shelltris if it is present and writable.  This
 can be handled by Autotools by running:
 
 `autoreconf -i`
@@ -19,12 +18,10 @@ as yourself and then
 
 `make install`
 
-as root, but if you wish to bypass the Autotools system, you can build
-getch by simply running
-`make getch`
-which will allow you to play the game locally.
+as root, but if you wish to bypass the Autotools system, you can
+play the game locally.
 
-If you opted to build getch and play the game locally, you can run it
+If you opted to play the game locally, you can run it
 with:
 `./shelltris.sh`
 in the shelltris directory. If you instead installed it system-wide, you
@@ -77,7 +74,7 @@ parameter.
   would have to be backgrounded, but there would still be a slight
   delay.
 
-## DECLAN'S CHANGES:
+## V1.2 CHANGES:
 
 My Arch desktop can't play the original version of this game, although it works
 fine on Debian and Ubuntu. After a bit of debugging, I found that the cause of
@@ -151,5 +148,5 @@ accompanying documentation.
 |------------|-----|--------------------------|
 |2007-12-12  |1.0  |First public release.     |
 |2007-12-18  |1.1  |Linux compatibility fixes.|
-|2017-01-12  |1.2  |See "DECLAN'S CHANGES".   |
+|2017-01-12  |1.2  |See "V1.2 CHANGES".       |
 |2017+       |git  |see commit history        |
